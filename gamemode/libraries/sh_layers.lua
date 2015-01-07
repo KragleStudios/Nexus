@@ -14,6 +14,10 @@ function NX.Layer.new()
 	return t
 end
 
+function NX.Layer.destroy(num)
+	table.remove(layers, num)
+end
+
 function layer:returnToMain()
 	for i=1,self.ents do
 		self.ents[i]:SetLayer(NX.Layer.Main)
