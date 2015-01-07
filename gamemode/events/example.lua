@@ -59,3 +59,5 @@ end
 function EVENT:EndPretty(eventinfo)
 
 end
+
+NX.Events:Register("Crap", EVENT.default_settings, EVENT.restrictions, EVENT, EVENT.locations)
