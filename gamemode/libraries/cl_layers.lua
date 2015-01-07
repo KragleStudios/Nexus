@@ -32,6 +32,10 @@ local ENT = FindMetaTable('Entity')
 function ENT:handleLayring()
 	if !self:shouldLayer() then return end
 	
+	if (self:GetClass() == "prop_physics" or self:IsVehicle()) then
+		self.layer = self:GetOwner():getLayer()
+	end
+
 	local lp = LocalPlayer()
 	if self == lp then
 	
