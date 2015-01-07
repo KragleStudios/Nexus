@@ -4,8 +4,6 @@ util.AddNetworkString("nx_setlayer")
 local ENT = FindMetaTable('Entity')
 
 function ENT:setLayer(num)
-	//print('Setting layer for ',self,' layer: ',num)
-
 	self.layer = num
 	self:SetNWInt("Layer", num)
 
