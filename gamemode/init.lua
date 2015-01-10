@@ -5,6 +5,7 @@ AddCSLuaFile("libraries.lua")
 include("database.lua")
 include("shared.lua")
 include("libraries.lua")
+include("vgui.lua")
 
 local config = {
 	Host = "";
