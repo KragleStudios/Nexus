@@ -47,7 +47,7 @@ function pnl:Paint(w,h)
 	surface.DrawRect(0,0,w,20)
 	surface.SetDrawColor(self:HasFocus() and self.oCol or Color(211,211,211,255))
 	surface.DrawRect(0,0,8,20)
-	surface.DrawOutlinedRect(0,0,w,20)
+
 	if self.title then
 		draw.SimpleText(self.title,'nexus-frame-title',15,10,color_white,nil,1)
 	end
@@ -55,9 +55,6 @@ function pnl:Paint(w,h)
 	if self.min then return end
 	surface.SetDrawColor(0,0,0,200)
 	surface.DrawRect(0,30,w,h-30)
-	surface.SetDrawColor(self:HasFocus() and self.oCol or Color(211,211,211,255))
-	surface.DrawOutlinedRect(0,30,w,h-30)
-
 end
 
 function pnl:SetTagColor(col)
