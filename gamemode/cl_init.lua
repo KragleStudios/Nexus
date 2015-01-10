@@ -5,7 +5,7 @@ include("vgui.lua")
 function GM:LoadFonts()
 	surface.CreateFont('nexus-frame-title',{
 		font='default',
-		size=36
+		size=22
 		})
 	surface.CreateFont('nexus-button',{
 		font='default',
