@@ -26,3 +26,27 @@ function NX.LoadVGUI()
 end
 
 NX.LoadVGUI()
+
+if SERVER then return end
+
+NX.minimizedFrames = {}
+
+local panel = FindMetaTable("Panel")
+
+local pop = panel.MakePopup
+
+function panel:MakePopup(bool)
+	if bool == nil or bool == true then
+		pop(self)
+		for _, pnl in pairs(NX.minimizedFrames) do
+			if pnl == self then NX.minimizedFrames[_] = nil end
+		end
+		return
+	end
+
+	table.insert(NX.minimizedFrames,self)
+	self:SetKeyBoardInputEnabled(false)
+	self:SetMouseInputEnabled(false)
+	LocalPlayer().cursorOn = false
+	gui.EnableScreenClicker(false)
+end
