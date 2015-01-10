@@ -1,6 +1,7 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("libraries.lua")
+AddCSLuaFile("vgui.lua")
 
 include("database.lua")
 include("shared.lua")
