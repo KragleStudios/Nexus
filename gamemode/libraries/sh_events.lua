@@ -4,12 +4,13 @@ NX.Events = NX.Events or {}
 NX.Events.List = NX.Events.List or {}
 NX.Events.ActiveEvents = NX.Events.ActiveEvents or {}
 
-function NX.Events:Register(sName, tDefaultSettings, tRestrictions, tEvent, tLocations)
+function NX.Events:Register(sName, tDefaultSettings, tRestrictions, tEvent, tLocations, tHooks)
 	NX.Events.List[sName] = {
 		restrictions = tRestrictions;
 		settings     = tDefaultSettings;
 		event        = tEvent;
 		locations    = tLocations;
+		hooks 		 = tHooks;
 	}
 end
 
@@ -35,7 +36,7 @@ function NX.Events:JoinEvent(sName, sGamemode, pJoiner)
 end
 
 function NX.Events:LeaveEvent(sName, pLeaver)
-	local event = NX.Events.ActiveEvents[sName]
+	local event = NX.Events.ActiveEvents[sName].Players = NX.Event.ActiveEvents[sName].Players - 1
 
 	pLeaver:setLayer(NX.Layer.Main)
 end
@@ -100,8 +101,6 @@ function NX.Events:CreateEvent(sGamemode, sName, pCreator, iMaxPlayers, iPlayTim
 	end
 	pCreator.layer = layer.key
 
-
-
 	NX.Events.ActiveEvents[sName] = {
 		Players = 1;
 		Type = sGamemode;
@@ -112,6 +111,16 @@ function NX.Events:CreateEvent(sGamemode, sName, pCreator, iMaxPlayers, iPlayTim
 		Layer = layer;
 		LayerID = layer.key;
 	}
+
+	//"PlayerSpawn" = function tits() end
+	local ev_hooks = {}
+	for i=0, #event.hooks do
+		local hname = i..layer.key..sName
+
+		hook.Add(i, hname, event.hooks[i])
+
+		ev_hooks[i] = hname
+	end
 
 	local ev_funcs = event.event
 	local function evLogic()
@@ -130,6 +139,10 @@ function NX.Events:CreateEvent(sGamemode, sName, pCreator, iMaxPlayers, iPlayTim
 					if (c == 2100) then 
 						ev_funcs:Kill(self:GetInfo(sName))
 						layer:returnToMain()
+
+						for i=0, #ev_hooks do
+							hook.Remove(i, ev_hooks[i])
+						end
 					else
 						ev_funcs:Continue(self:GetInfo(sName))
 						evLogic()
@@ -173,3 +186,24 @@ end
 
 NX.LoadEvents()
 
+local meta = FindMetaTable("Player")
+
+if (SERVER)
+	function meta:addPoints(num)
+		self.points = self.points + num
+		self:SetNWInt("Points", self.points)
+	end
+
+	function meta:takePoints(num)
+		self.points = self.points - num
+		self:SetNWInt("Points", self.points)
+	end
+end
+
+function meta:getPoints()
+	if (self.points != self:GetNWInt("Points", 0)) then
+		self.points = self:GetNWInt("Points", 0)
+	end
+
+	return self.points
+end
