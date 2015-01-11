@@ -4,13 +4,13 @@ NX.Events = NX.Events or {}
 NX.Events.List = NX.Events.List or {}
 NX.Events.ActiveEvents = NX.Events.ActiveEvents or {}
 
-function NX.Events:Register(sName, tDefaultSettings, tRestrictions, tEvent, tLocations, tHooks)
+function NX.Events:Register(sName, tEventData)
 	NX.Events.List[sName] = {
-		restrictions = tRestrictions;
-		settings     = tDefaultSettings;
-		event        = tEvent;
-		locations    = tLocations;
-		hooks 		 = tHooks;
+		restrictions = tEventData.restrictions;
+		settings     = tEventData.default_settings;
+		event        = tEventData;
+		locations    = tEventData.locations;
+		hooks 		 = tEventData.hooks;
 	}
 end
 
