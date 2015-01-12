@@ -36,7 +36,7 @@ function NX.Events:JoinEvent(sName, sGamemode, pJoiner)
 end
 
 function NX.Events:LeaveEvent(sName, pLeaver)
-	local event = NX.Events.ActiveEvents[sName].Players = NX.Event.ActiveEvents[sName].Players - 1
+	NX.Events.ActiveEvents[sName].Players = NX.Event.ActiveEvents[sName].Players - 1
 
 	pLeaver:setLayer(NX.Layer.Main)
 end
