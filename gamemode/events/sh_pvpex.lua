@@ -33,9 +33,13 @@ EVENT.locations = {
 }
 
 EVENT.hooks = {
-	"PlayerDeath" = function death(ply)
+	["PlayerDeath"] = {call = function(ply)
 		//do stuff; add points etc
-	end;
+	end, "Server"},
+
+	["HUDPaint"] = {call = function()
+		draw.SimpleText("TITS", "Default", 0, 0, Color(255, 255, 255), 0, 0)
+	end, "Client"},
 
 }
 

@@ -49,6 +49,24 @@ function NX.Events:CreateEvent(sGamemode, sName, pCreator, iMaxPlayers, iPlayTim
 	local event = NX.Events.List[sGamemode]
 	if (not event) then self:Error(pCreator, "Gamemode not found! Yours ", sGamemode) return end 
 
+	local ev_hooks = {}
+	for i=0, #event.hooks do
+		local hname = i..layer.key..sName
+		local realm = event.hooks[i][2]
+
+		if (SERVER and realm == "Server") then
+			hook.Add(i, hname, event.hooks[i].call)
+		elseif (CLIENT and realm == "Client") then 
+			hook.Add(i, hname, event.hooks[i].call)
+		else
+			hook.Add(i, hname, event.hooks[i].call)
+		end
+
+		ev_hooks[i] = {hname, realm}
+	end
+
+	if (CLIENT) then return end
+
 	local def = event.settings
 	if (def) then
 		if (def.maxplayers and not iMaxPlayers) then iMaxPlayers = def.maxplayers end
@@ -112,15 +130,7 @@ function NX.Events:CreateEvent(sGamemode, sName, pCreator, iMaxPlayers, iPlayTim
 		LayerID = layer.key;
 	}
 
-	//"PlayerSpawn" = function tits() end
-	local ev_hooks = {}
-	for i=0, #event.hooks do
-		local hname = i..layer.key..sName
-
-		hook.Add(i, hname, event.hooks[i])
-
-		ev_hooks[i] = hname
-	end
+	
 
 	local ev_funcs = event.event
 	local function evLogic()
@@ -164,14 +174,15 @@ function NX.LoadEvents()
 	if (SERVER) then
 		for _, x in pairs(file.Find(path..'/events/*','GAME')) do
 
+			print(x)
 			local realm = x:sub(1,2)
 			if realm == 'cl' then
-				AddCSLuaFile("events/"..x) print('Sent '..x)
+				AddCSLuaFile("../events/"..x) print('Sent '..x)
 			elseif realm == 'sv' then
-				include("events/"..x) print('Included '..x)
+				include("../events/"..x) print('Included '..x)
 			elseif realm =='sh' then
-				AddCSLuaFile("events/"..x) print('Sent '..x)
-				include("events/"..x)
+				AddCSLuaFile("../events/"..x) print('Sent '..x)
+				include("../events/"..x)
 			end
 		end
 	else
