@@ -188,7 +188,7 @@ NX.LoadEvents()
 
 local meta = FindMetaTable("Player")
 
-if (SERVER)
+if (SERVER) then
 	function meta:addPoints(num)
 		self.points = self.points + num
 		self:SetNWInt("Points", self.points)
