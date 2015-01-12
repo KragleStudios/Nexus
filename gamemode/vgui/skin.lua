@@ -132,10 +132,9 @@ function PANEL:Init()
 	self:SetTitle( "" )
 
 	PANEL.Title = ""
-	function PANEL:SetTitle( strTitle )
-
-		self.Title = strTitle
-
+	self.Title = ""
+	function PANEL:SetTitl(str)
+		self.Tite = str
 	end
 	
 	self:SetFocusTopLevel( true )
@@ -146,7 +145,9 @@ function PANEL:Init()
 	self:SetSizable( false )
 	self:SetScreenLock( false )
 	self:SetDeleteOnClose( true )
-	self:SetTitle( "Window" )
+	if (string.len(self.Title) <= 1) then
+		self:SetTitle( "Window" )
+	end
 
 	self:SetMinWidth( 50 )
 	self:SetMinHeight( 50 )
