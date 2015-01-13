@@ -2,6 +2,7 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("libraries.lua")
 AddCSLuaFile("vgui.lua")
+AddCSLuaFile("network.lua")
 
 include("database.lua")
 include("shared.lua")
@@ -24,3 +25,13 @@ end
 function NX.MySQL.Query(sQuery, fCallback)
 	return NX.MySQL.DB:Query(sQuery, fCallback)
 end*/
+
+function GM:PlayerInitialSpawn(ply)
+	ply.loggedIn = false
+	ply:KillSilent()
+	network.new('PlayerInitialSpawn'):send(ply)
+end
+
+function GM:PlayerDeathThink(ply)
+	return ply.loggedIn
+end
