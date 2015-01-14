@@ -28,7 +28,7 @@ end*/
 
 function GM:PlayerInitialSpawn(ply)
 	ply.loggedIn = false
-	ply:KillSilent()
+	timer.Simple(1,function() ply:KillSilent() ply:SetEyeAngles(Angle(2,145,0)) ply:SetPos(Vector(120,-52,70)) end) //positions and stuff will change once we have a normal map
 	network.new('PlayerInitialSpawn'):send(ply)
 end
 
