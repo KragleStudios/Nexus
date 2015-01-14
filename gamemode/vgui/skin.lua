@@ -133,19 +133,21 @@ function PANEL:Init()
 
 	PANEL.Title = ""
 	self.Title = ""
-	function PANEL:SetTitle(str)
-		self.Title = str
+	function PANEL:SetTitl(str)
+		self.Tite = str
 	end
 	
 	self:SetFocusTopLevel( true )
 
 	self:SetPaintShadow( true )
 
-	self:ShowCloseButton(false)
 	self:SetDraggable( true )
 	self:SetSizable( false )
 	self:SetScreenLock( false )
 	self:SetDeleteOnClose( true )
+	if (string.len(self.Title) <= 1) then
+		self:SetTitle( "Window" )
+	end
 
 	self:SetMinWidth( 50 )
 	self:SetMinHeight( 50 )
@@ -166,12 +168,12 @@ function PANEL:Paint( w, h )
 		Derma_DrawBackgroundBlur( self, self.m_fCreateTime )
 	end
 
-	draw.RoundedBox( 4, 0, 0, w, h, SKIN.FrameOutlineColor )
-	draw.RoundedBox( 4, 1, 1, w - 2, h - 2, SKIN.FrameBorderColor )
-	draw.RoundedBox( 4, 2, 2, w - 4, h - 4, SKIN.FrameBGColor )
+	draw.RoundedBox( 8, 0, 0, w, h, SKIN.FrameOutlineColor )
+	draw.RoundedBox( 8, 1, 1, w - 2, h - 2, SKIN.FrameBorderColor )
+	draw.RoundedBox( 8, 2, 2, w - 4, h - 4, SKIN.FrameBGColor )
 	surface.SetFont( "DermaLarge" )
 	self.TitleW, self.TitleH = surface.GetTextSize( self.Title )
-	draw.RoundedBoxEx( 4, 2, 2, w - 4, self.TitleH + 20, SKIN.FrameTitleBGColor, true, true )
+	draw.RoundedBoxEx( 8, 2, 2, w - 4, self.TitleH + 20, SKIN.FrameTitleBGColor, true, true )
 	surface.SetTextPos( w / 2 - self.TitleW / 2, 10 )
 	surface.SetTextColor( 221, 221, 221 )
 	surface.DrawText( self.Title )
@@ -279,9 +281,9 @@ end
 
 function HUDPANEL:Paint( w, h )
 
-	draw.RoundedBox( 4, 0, 0, w, h, SKIN.FrameOutlineColor )
-	draw.RoundedBox( 4, 1, 1, w - 2, h - 2, SKIN.FrameBorderColor )
-	draw.RoundedBox( 4, 2, 2, w - 4, h - 4, SKIN.FrameBGColor )
+	draw.RoundedBox( 8, 0, 0, w, h, SKIN.FrameOutlineColor )
+	draw.RoundedBox( 8, 1, 1, w - 2, h - 2, SKIN.FrameBorderColor )
+	draw.RoundedBox( 8, 2, 2, w - 4, h - 4, SKIN.FrameBGColor )
 
 end
 
