@@ -6,25 +6,41 @@ AddCSLuaFile("network.lua")
 
 include("database.lua")
 include("shared.lua")
-include("libraries.lua")
 include("vgui.lua")
+include("db_config.lua")
 
-local config = {
-	Host = "";
-	User = "";
-	Pass = "";
-	Name = "Nexus";
-}
+if (!config) then
+	print("No valid config installed.")
+	return
+end
 
 NX.MySQL = {}
-/*NX.MySQL.DB = DB.New(config)
+NX.MySQL.DB = DB.New(config)
 function NX.MySQL.Escape(sQuery)
 	return NX.MySQL.DB:Escape(sQuery)
 end
 
 function NX.MySQL.Query(sQuery, fCallback)
 	return NX.MySQL.DB:Query(sQuery, fCallback)
-end*/
+end
+
+NX.MySQL.Query([[
+	CREATE TABLE IF NOT EXISTS `playerdata` (
+	  `events_created` int(255) unsigned NOT NULL,
+	  `events_joined` int(55) unsigned NOT NULL,
+	  `events_won` int(255) unsigned NOT NULL,
+	  `events_abandoned` int(255) unsigned NOT NULL,
+	  `lastknownposition` varchar(255) NOT NULL,
+	  `kills` int(255) unsigned NOT NULL,
+	  `deaths` int(255) unsigned NOT NULL,
+	  `nexi` bigint(255) unsigned NOT NULL,
+	  `model` varchar(255) NOT NULL,
+	  `pac_parts` mediumtext NOT NULL,
+	  `rank` varchar(255) NOT NULL,
+	  `xp` bigint(255) unsigned NOT NULL,
+	  `steamid` int(100) unsigned NOT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+]])
 
 function GM:PlayerInitialSpawn(ply)
 	ply.loggedIn = false
@@ -35,3 +51,5 @@ end
 function GM:PlayerDeathThink(ply)
 	return ply.loggedIn
 end
+
+include("libraries.lua")

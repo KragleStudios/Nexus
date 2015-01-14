@@ -21,8 +21,7 @@ end
 if (CLIENT) then return end
 util.AddNetworkString("Nexi_Load")
 
-function meta:saveNexi()
-	self:SetPData("Nexi", self.Nexi)
+function meta:syncNexi()
 	self:SetNWInt("Nexi", self.Nexi)
 end
 
@@ -35,27 +34,19 @@ function meta:addNexi(iAmt)
 	iAmt = tonumber(iAmt)
 
 	self.Nexi = self.Nexi + iAmt
-	self:saveNexi()
+	self:syncNexi()
 end
 
 function meta:takeNexi(iAmt)
 	iAmt = tonumber(iAmt)
 
 	self.Nexi = self.Nexi - iAmt
-	self:saveNexi()
+	self:syncNexi()
 end
 
 function meta:setNexi(iAmt)
 	iAmt = tonumber(iAmt)
 
 	self.Nexi = iAmt
-	self:saveNexi()
+	self:syncNexi()
 end
-
-hook.Add("InitialPlayerSpawn", "InitialPlayerSpawn:Nexi", function(ply)
-	ply:loadNexi()
-end)
-
-hook.Add("PlayerDisconnected", "PlayerDisconnected:Nexi", function(ply)
-	ply:saveNexi()
-end)
