@@ -131,10 +131,9 @@ function PANEL:Init()
 
 	self:SetTitle( "" )
 
-	PANEL.Title = ""
 	self.Title = ""
-	function PANEL:SetTitl(str)
-		self.Tite = str
+	function self:SetTitle(str)
+		self.Title = str
 	end
 	
 	self:SetFocusTopLevel( true )
