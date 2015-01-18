@@ -122,11 +122,8 @@ function databaseMeta:CreateQueryObject(query, callback, fetchAll, _retry)
     local queryObj = self.__database:query(query)
 
     if queryObj then
-        if fetchAll then
-            queryObj.onSuccess = newCallback
-        else
-            queryObj.onData = newCallback
-        end
+
+        queryObj.onSuccess = newCallback
 
         queryObj.onError = function(_, err, sql)
             self:OnError(err, sql, caller_info)
@@ -139,7 +136,6 @@ function databaseMeta:CreateQueryObject(query, callback, fetchAll, _retry)
         end
 
         queryObj:setOption(mysqloo.OPTION_NAMED_FIELDS)
-
         return queryObj
     else
         local err, errMessage = self:Status()
@@ -154,7 +150,6 @@ end
 
 function databaseMeta:Query(...)
     local queryObj = self:CreateQueryObject(...)
-
     if queryObj then
         queryObj:start()
 
