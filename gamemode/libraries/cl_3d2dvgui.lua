@@ -165,6 +165,20 @@ hook.Add( "KeyRelease", "VGUI3D2DMouseRelease", function( _, key )
 	end
 end )
 
+hook.Add('Think','VGUI3D2DShoot',function()
+	if input.IsMouseDown(MOUSE_LEFT) then
+		for pnl in pairs(inputWindows) do
+			if pnl:IsValid() then
+				origin = pnl.Origin
+				scale = pnl.Scale
+				angle = pnl.Angle
+				normal = pnl.Normal
+				
+				postPanelEvent( pnl, "DoClick" )
+			end
+		end
+	end
+end)
 -- Key input
 
 -- TODO, OH DEAR.
