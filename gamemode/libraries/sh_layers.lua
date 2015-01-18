@@ -43,7 +43,7 @@ function ENT:getLayer()
 end
 
 function ENT:shouldLayer()
-	print(self:GetClass())
+	//print(self:GetClass())
 	
 	if self:IsPlayer() then return true end
 	if self:IsVehicle() then return true end
@@ -80,7 +80,7 @@ function GM:ShouldCollide(eEnt1, eEnt2)
 	local class2 = eEnt2:GetClass()
 
 	if (class1 == "worldspawn" or class2 == "worldspawn") then
-		print(class1, class2)
+		//print(class1, class2)
 		return true
 	end
 
