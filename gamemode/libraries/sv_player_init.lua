@@ -8,11 +8,11 @@ hook.Add("PlayerInitialSpawn", "PlayerInitialSpawn:NexusInitialization", functio
 	local nexi, events, pac, xp = 0, 0, 0, 0
 	local rank = "user" //TODO: Rank system
 
-	NX.MySQL.Query("SELECT * FROM playerdata WHERE steamid ="..ply:SteamID(), function(query)
+	NX.MySQL.Query("SELECT * FROM playerdata WHERE steamid =\""..ply:SteamID().."\"", function(query)
 		if (not query) then
-			NX.MySQL.Query([[INSERT INTO playerdata 
+			NX.MySQL.Query(([[INSERT INTO playerdata 
 				(events_created, events_joined, events_won, events_abandoned, kills, deaths, nexi, model, pac_parts, rank, xp, steamid) VALUES
-				(]].."0, 0, 0, 0, 0, 0, 0, "..mdl..", '', 'user', 0, "..ply:SteamID())
+				(0, 0, 0, 0, 0, 0, 0, %s, '', 'user', 0, %s)]]):format(mdl,ply:SteamID()))
 				
 		else
 
@@ -28,7 +28,7 @@ hook.Add("PlayerInitialSpawn", "PlayerInitialSpawn:NexusInitialization", functio
 			ply.pac_parts = q["pac_parts"]
 			ply.rank = q["rank"]
 			ply.xp = q["xp"]
-			ply:SetPos(util.StringToType(q["lastknownposition"], "Vector") or ply:GetPos())
+			ply.lpk = util.StringToType(q["lastknownposition"], "Vector") or ply:GetPos()
 		end
 	end)
 end)
