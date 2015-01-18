@@ -9,14 +9,26 @@ hook.Add("PlayerInitialSpawn", "PlayerInitialSpawn:NexusInitialization", functio
 	local rank = "user" //TODO: Rank system
 
 	NX.MySQL.Query("SELECT * FROM playerdata WHERE steamid =\""..ply:SteamID().."\"", function(query)
-		if (not query) then
+		if not query[1] then
 			NX.MySQL.Query(([[INSERT INTO playerdata 
-				(events_created, events_joined, events_won, events_abandoned, kills, deaths, nexi, model, pac_parts, rank, xp, steamid) VALUES
-				(0, 0, 0, 0, 0, 0, 0, %s, '', 'user', 0, %s)]]):format(mdl,ply:SteamID()))
+				(events_created, events_joined, events_won, events_abandoned, kills, deaths, nexi, model, pac_parts,lastknownposition, rank, xp, steamid) VALUES
+				(0, 0, 0, 0, 0, 0, 0, %q, '',%q, 'user', 0, %q)]]):format(mdl,util.TypeToString(ply:GetPos()),ply:SteamID()))
+
+			ply.events_created = 0
+			ply.events_joined = 0
+			ply.events_won = 0
+			ply.events_abandoned = 0
+			ply.kills = 0
+			ply.deaths = 0
+			ply.Nexi = 0
+			ply.pac_parts = ''
+			ply.rank = "user"
+			ply.xp = 0
+			ply.lpk = ply:GetPos()
 				
 		else
 
-			local q = query
+			local q = query[1]
 			ply.events_created = q["events_created"]
 			ply.events_joined = q["events_joined"]
 			ply.events_won = q["events_won"]
@@ -56,10 +68,10 @@ hook.Add("PlayerDisconnected", "PlayerDisconnected:NexusInitialization", functio
 		kills = %i,
 		deaths = %i,
 		nexi = "%i,
-		model = %s,
-		pac_parts = %s,
-		rank = %s,
+		model = %q,
+		pac_parts = %q,
+		rank = %q,
 		xp = %i,
-		lastknownposition = %s
-	) WHERE steamid = %s]]):format(ev1,ev2,ev3,ev4,kills,deaths,nexi,model,pac_parts,rank,xp,lkp,ply:SteamID()))
+		lastknownposition = %q
+	) WHERE steamid = %q]]):format(ev1,ev2,ev3,ev4,kills,deaths,nexi,model,pac_parts,rank,xp,lkp,ply:SteamID()))
 end)
