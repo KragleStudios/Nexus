@@ -128,7 +128,7 @@ AccessorFunc( PANEL, "m_iMinHeight", 			"MinHeight" )
 AccessorFunc( PANEL, "m_bBackgroundBlur", 		"BackgroundBlur", 	FORCE_BOOL )
 
 function PANEL:Init()
-
+	self:ShowCloseButton(false)
 	self:SetTitle( "" )
 
 	self.Title = ""
