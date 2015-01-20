@@ -57,21 +57,21 @@ hook.Add("PlayerDisconnected", "PlayerDisconnected:NexusInitialization", functio
 	local pac_parts = ""
 	local rank = ""
 	local xp = ply.exp or 0
-	local lkp = ply:GetPos() 
+	local lkp = ply:GetPos()
 	lkp = util.TypeToString(lkp)
 
-	NX.MySQL.Query(([[UPDATE playerdata SET (
+	NX.MySQL.Query(([[UPDATE playerdata SET
 		events_created = %i,
 		events_joined = %i,
 		events_won = %i,
 		events_abandoned = %i,
 		kills = %i,
 		deaths = %i,
-		nexi = "%i,
+		nexi = %i,
 		model = %q,
 		pac_parts = %q,
 		rank = %q,
 		xp = %i,
 		lastknownposition = %q
-	) WHERE steamid = %q]]):format(ev1,ev2,ev3,ev4,kills,deaths,nexi,model,pac_parts,rank,xp,lkp,ply:SteamID()))
+     WHERE steamid = %q]]):format(ev1,ev2,ev3,ev4,kills,deaths,nexi,model,pac_parts,rank,xp,lkp,ply:SteamID()))
 end)

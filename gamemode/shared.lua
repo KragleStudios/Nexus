@@ -8,8 +8,6 @@ DeriveGamemode("sandbox")
 
 NX = NX or {}
 
-include('network.lua')
-
 function GM:Initialize()
 	self.BaseClass.Initialize( self )
 end

@@ -25,3 +25,9 @@ end
 function GM:HUDPaint()
 	draw.RoundedBox(2,ScrW()/2-2,ScrH()/2-2,4,4,color_white)
 end
+
+function GM:PlayerLogin()
+	LocalPlayer().lgScreen:Remove()
+	net.Start('playerLogin')
+	net.SendToServer()
+end

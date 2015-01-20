@@ -48,20 +48,23 @@ function pnl:Init()
 		draw.SimpleText(nexi,'nexus-frame-nexi',pw/2,ph-15,Color(152,152,152),1,1)
 	end
 
-	self.login = vgui.Create('NButton')
+	self.login = vgui.Create('DButton')
 	self.login:SetSize(self.av:GetWide()+self.name:GetWide()+20,50)
 	self.login:SetPos(self.av.x,self.av.y+self.av:GetTall()+10)
 	self.login:SetText('Login')
 	self.login:SetFont('nexus-frame-title')
 	self.login:SetPaintedManually(true)
+	self.login:SetSkin('Nexus')
+	self.login.DoClick = GAMEMODE.PlayerLogin
 
-	self.disconnect = vgui.Create('NButton')
+	self.disconnect = vgui.Create('DButton')
 	self.disconnect:SetSize(self.login:GetWide(),50)
 	self.disconnect:SetPos(self.av.x,self.login.y+self.login:GetTall()+10)
 	self.disconnect:SetText('Disconnect')
 	self.disconnect:SetFont('nexus-frame-title')
 	self.disconnect:SetPaintedManually(true)
-
+	self.disconnect:SetSkin('Nexus')
+	self.disconnect.DoClick = function() LocalPlayer():ConCommand('disconnect') end
 	hook.Add('PostDrawOpaqueRenderables','login-screen',function() self:DrawScreen() end)
 end
 
@@ -91,6 +94,15 @@ function pnl:Think()
 
 	if ang.p > BL.p then LocalPlayer():SetEyeAngles(Angle(BL.p,ang.y,ang.r)) end
 	if ang.p < BR.p then LocalPlayer():SetEyeAngles(Angle(BR.p,ang.y,ang.r)) end
+end
+
+function pnl:OnRemove()
+	hook.Remove('PostDrawOpaqueRenderables','login-screen')
+	self.login:Remove()
+	self.av:Remove()
+	self.disconnect:Remove()
+	self.name:Remove()
+	self.model:Remove()
 end
 
 pnl:registerPanel()
