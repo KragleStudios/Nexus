@@ -1,11 +1,11 @@
 local path = (GM and GM.Path) or GAMEMODE.Path
 
-NX.Events = NX.Events or {}
-NX.Events.List = NX.Events.List or {}
-NX.Events.ActiveEvents = NX.Events.ActiveEvents or {}
+nx.Events = nx.Events or {}
+nx.Events.List = nx.Events.List or {}
+nx.Events.ActiveEvents = nx.Events.ActiveEvents or {}
 
-function NX.Events:Register(sName, tEventData)
-	NX.Events.List[sName] = {
+function nx.Events:Register(sName, tEventData)
+	nx.Events.List[sName] = {
 		restrictions = tEventData.restrictions;
 		settings     = tEventData.default_settings;
 		event        = tEventData;
@@ -14,39 +14,39 @@ function NX.Events:Register(sName, tEventData)
 	}
 end
 
-function NX.Events:Error(pTarget, ...)
+function nx.Events:Error(pTarget, ...)
 	print(tostring({...}))
 end
 
-function NX.Events:SendInvite(pPlayer, sName, sGamemode, pInviter, bInvitedByCreator)
+function nx.Events:SendInvite(pPlayer, sName, sGamemode, pInviter, bInvitedByCreator)
 
 end
 
-function NX.Events:JoinEvent(sName, sGamemode, pJoiner)
-	local event = NX.Events.ActiveEvents[sName]
+function nx.Events:JoinEvent(sName, sGamemode, pJoiner)
+	local event = nx.Events.ActiveEvents[sName]
 	if (not event) then self:Error(pJoiner, "This event is not currently active!") return end 
 
 	local canjoin, cantreason = event.event:CanPlayerJoin(pJoiner, self:GetInfo(sName))
 	if (canjoin) then
-		NX.Events.ActiveEvents[sName].Players = NX.Event.ActiveEvents[sName].Players + 1
+		nx.Events.ActiveEvents[sName].Players = nx.Event.ActiveEvents[sName].Players + 1
 		pJoiner:setLayer(event.LayerID)
 	else
 		self:Error(pJoiner, "You can't join this event because ", cantreason)
 	end
 end
 
-function NX.Events:LeaveEvent(sName, pLeaver)
-	NX.Events.ActiveEvents[sName].Players = NX.Event.ActiveEvents[sName].Players - 1
+function nx.Events:LeaveEvent(sName, pLeaver)
+	nx.Events.ActiveEvents[sName].Players = nx.Event.ActiveEvents[sName].Players - 1
 
-	pLeaver:setLayer(NX.Layer.Main)
+	pLeaver:setLayer(nx.Layer.Main)
 end
 
-function NX.Events:GetInfo(sName)
+function nx.Events:GetInfo(sName)
 	return self.ActiveEvents[sName]
 end
 
-function NX.Events:CreateEvent(sGamemode, sName, pCreator, iMaxPlayers, iPlayTime, iMaxRounds, iMaxScore, bPrivate, tInvitations, iLocationID)
-	local event = NX.Events.List[sGamemode]
+function nx.Events:CreateEvent(sGamemode, sName, pCreator, iMaxPlayers, iPlayTime, iMaxRounds, iMaxScore, bPrivate, tInvitations, iLocationID)
+	local event = nx.Events.List[sGamemode]
 	if (not event) then self:Error(pCreator, "Gamemode not found! Yours ", sGamemode) return end 
 
 	local ev_hooks = {}
@@ -101,25 +101,25 @@ function NX.Events:CreateEvent(sGamemode, sName, pCreator, iMaxPlayers, iPlayTim
 	if (#tInvitations > 0) then
 		for i=0, #tInvitations do
 			local targ = Entity(tInvitations[i])
-			if (!IsValid(targ) or not targ:IsPlayer()) then NX.Events:Error(pCreator, "Unable to invite player of index: ", tInvitations[i]) continue end
+			if (!IsValid(targ) or not targ:IsPlayer()) then nx.Events:Error(pCreator, "Unable to invite player of index: ", tInvitations[i]) continue end
 			
-			NX.Events:SendInvite(targ, sName, sGamemode, pCreator, false)
+			nx.Events:SendInvite(targ, sName, sGamemode, pCreator, false)
 		end
 	else
 		local players = player.GetAll()
 		for i=0, #players do
-			NX.Events:SendInvite(players[i], sName, sGamemode, pCreator, true)
+			nx.Events:SendInvite(players[i], sName, sGamemode, pCreator, true)
 		end
 	end
 
-	local layer = NX.Layer.New
+	local layer = nx.Layer.New
 
 	if (SERVER) then
 		pCreator:setLayer(layer.key)
 	end
 	pCreator.layer = layer.key
 
-	NX.Events.ActiveEvents[sName] = {
+	nx.Events.ActiveEvents[sName] = {
 		Players = 1;
 		Type = sGamemode;
 		Private = bPrivate;
@@ -169,7 +169,7 @@ function NX.Events:CreateEvent(sGamemode, sName, pCreator, iMaxPlayers, iPlayTim
 	end
 end
 
-function NX.LoadEvents()
+function nx.LoadEvents()
 	print("Loading Events!")
 	if (SERVER) then
 		for _, x in pairs(file.Find(path..'/events/*','GAME')) do
@@ -195,7 +195,7 @@ function NX.LoadEvents()
 	end
 end
 
-NX.LoadEvents()
+nx.LoadEvents()
 
 local meta = FindMetaTable("Player")
 

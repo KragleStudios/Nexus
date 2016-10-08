@@ -11,7 +11,7 @@ end
 
 local path = (GM and GM.Path) or GAMEMODE.Path
 
-function NX.LoadVGUI()
+function nx.loadVgui()
 	if SERVER then
 		for _, x in pairs(file.Find(path..'/vgui/*','GAME')) do
 			AddCSLuaFile("vgui/"..x) print('Sent '..x)
@@ -25,4 +25,4 @@ function NX.LoadVGUI()
 	end
 end
 
-NX.LoadVGUI()
+nx.loadVgui()

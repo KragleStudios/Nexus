@@ -6,7 +6,7 @@ GM.Path 	= "gamemodes/nexus/gamemode"
 
 DeriveGamemode("sandbox")
 
-NX = NX or {}
+nx = nx or {}
 
 function GM:Initialize()
 	self.BaseClass.Initialize( self )

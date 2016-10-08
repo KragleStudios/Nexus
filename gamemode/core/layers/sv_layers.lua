@@ -4,13 +4,7 @@ util.AddNetworkString("nx_setlayer")
 local ENT = FindMetaTable('Entity')
 
 function ENT:setLayer(num)
-	self.layer = num
-	self:SetNWInt("Layer", num)
-
-	net.Start('nx_layer_set')
-		net.WriteUInt(self:EntIndex(),32)
-		net.WriteUInt(num,8)
-	net.Broadcast()
+	ndoc.table.nxLayers[ self:EntIndex() ] = num
 end
 
 net.Receive("nx_setlayer", function(l, ply)

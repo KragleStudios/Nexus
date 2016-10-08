@@ -71,4 +71,4 @@ function EVENT:EndPretty(eventinfo)
 
 end
 
-NX.Events:Register("Crap", EVENT)
+nx.Events:Register("Crap", EVENT)
