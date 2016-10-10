@@ -22,6 +22,10 @@ if (SERVER) then
 		end
 	end
 
+	function meta:resetLayer()
+		self:setLayer(nx.config.default_layer)
+	end
+
 else
 
 	function meta:handleLayering()
