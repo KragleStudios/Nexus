@@ -32,7 +32,14 @@ function nx.events:canJoin(ply, ev_id)
 end
 
 function nx.events:getPlayers(ev_id)
-	return ndoc.table.nxActiveEvents[ ev_id ].players
+	local ndocPlys = ndoc.table.nxActiveEvents[ ev_id ].players
+	local plys = {}
+
+	for k,v in ndoc.pairs(ndocPlys) do
+		table.insert(plys, v)
+	end
+
+	return plys
 end
 
 function nx.events:joinEvent(ply, ev_id)
@@ -42,9 +49,9 @@ function nx.events:joinEvent(ply, ev_id)
 	if (not nx.events:canJoin(ply, ev_id)) then return end
 
 	if (eventData.state == STATE_ENDING or eventData.state == STATE_RUNNING) then
-		ndoc.table.nxActiveEvents.spectators[ ply ] = true
+		ndoc.table.nxActiveEvents[ ev_id ].spectators[ ply ] = true
 	else
-		ndoc.table.nxActiveEvents.players[ ply ] = true
+		ndoc.table.nxActiveEvents[ ev_id ].players[ ply ] = true
 	end
 
 	ply:setLayer(eventData.layer)
@@ -70,13 +77,24 @@ function nx.events:leaveEvent(ply, ev_id)
 	if (shouldPause) then event_Functions:doPause(ev_id) end
 end
 
-function nx.events:destroyEvent(id)
+function nx.events:destroyEvent(id, data)
 	for k,v in ndoc.pairs(ndoc.table.nxActiveEvents[ ev_id ].players) do
-		v:resetLayer()
+		if (not IsValid(k)) then continue end
+
+		k:resetLayer()
 	end
 	for k,v in ndoc.pairs(ndoc.table.nxActiveEvents[ id ].spectators) do
-		v:resetLayer()
+		if (not IsValid(k)) then continue end
+
+		k:resetLayer()
 	end
+
+
+	for hk,v in pairs(data.hooks) do
+		hook.Remove(hk, hk..id)
+	end
+
+	ndoc.table.nxActiveEvents[ id ] = nil
 
 	--do some notification of shit
 end
@@ -144,5 +162,17 @@ function nx.events:new(type, name, creator, private, invitations, locationID)
 			end
 		end
 	end)
+
+	for hk, cback in pairs(ev_data.hooks) do
+		hook.Add(hk, hk .. id, function(...)
+			local players_in_event = nx.events:getPlayers(id)
+
+			for k,v in pairs({...}) do
+				if (type(v) == "player" and not table.HasValue(players_in_event, v)) then continue end --this will continue everytime a hook has a player entity not in our specific event
+
+				cback(...)
+			end
+		end)
+	end
 end
 

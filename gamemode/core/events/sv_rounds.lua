@@ -1,44 +1,59 @@
 nx.events.rounds = nx.events.rounds or {}
 
-local baseHandle = {}
-function baseHandle:shouldPause()
+local roundHandler = {}
+function roundHandler:shouldPause()
 	local plys = nx.events:getPlayers(self.id)
 
+	if (self.data.shouldPause(self)) then return true end
 	if (plys < 2) then return true end
 end
 
-function baseHandle:pause()
+function roundHandler:pause()
 	--freeze players or smth, rounds don't actually continue here
 end
 
-function baseHandle:end()
+function roundHandler:end()
 	--show scoreboard and shit
 end
 
-function baseHandle:gameOver()
+function roundHandler:gameOver()
 	--show final scoreboard, event over, and do return to main preperation
+
+	timer.Simple(10, function()
+		self:destroy()
+	end)
 end
 
-function baseHandle:destroy()
-	nx.events:destroyEvent(self.id) --send everyone back
+function roundHandler:destroy()
+	nx.events:destroyEvent(self.id, self.data) --send everyone back
 
 	timer.Destroy("roundHandler."..self.id)
 end
 
-function baseHandle:shouldStop()
+function roundHandler:shouldStop()
 	local plys = nx.events:getPlayers(self.id)
 
 	if (plys == 0) then return true end
 	if (self.data.shouldEnd(self.id)) then return true end
 end
 
-function baseHandle:setup()
+function roundHandler:setup()
+	local plys = ndoc.table.nxActiveEvents
+
+	for k,v in ndoc.pairs(plys.spectators) do --repopulate the players with these mf late joining bitches
+
+		ndoc.table.nxActiveEvents[ self.id ].players[ k ] = true
+		ndoc.table.nxActiveEvents[ self.id ].spectators[ k ] = nil
+
+	end
+
 	self.data.setup(self.id)
 end
 
-function baseHandle:update()
+function roundHandler:update()
 	if (self:shouldStop()) then
 		self:destroy()
+		return
 	end
 
 	if (self:shouldPause()) then
@@ -82,6 +97,7 @@ function baseHandle:update()
 	else
 		if (self.time_left == 0) then
 			self:destroy()
+			return
 		end
 	end
 
@@ -95,16 +111,16 @@ end
 function nx.events.rounds:start(id, gamemode)
 	local eventData = nx.eventsList [ gamemode ]
 
-	baseHandle.id = id
-	baseHandle.data = eventData
-	baseHandle.time_left = 0 --force start
-	baseHandle.state = STATE_ENDING --force start
-	baseHandle.rounds = eventData.play_style[ 2 ]
-	baseHandle.time_limit = eventData.play_style[ 3 ]
+	roundHandler.id = id
+	roundHandler.data = eventData
+	roundHandler.time_left = 0 --force start
+	roundHandler.state = STATE_ENDING --force start
+	roundHandler.rounds = eventData.play_style[ 2 ]
+	roundHandler.time_limit = eventData.play_style[ 3 ]
 	
 	local obj = {}
 	setmetatable(obj, {
-			__index = baseHandle
+			__index = roundHandler
 		})
 
 	timer.Create("roundHandler."..id, 1, 0, obj:update())
