@@ -2,19 +2,19 @@ nx.events.timed = nx.events.timed or {}
 
 local timedHandler = {}
 function timedHandler:shouldPause()
-	local plys = nx.events:getPlayers(self.id)
-
 	if (self.data.shouldPause(self)) then return true end
 
-	if (plys < 2) then return true end
+	if (#self.players < (self.data.restrictions.minPlayers or 2)) then return true end
 end
 
 function timedHandler:pause()
-	--freeze players or smth, rounds don't actually continue here
+	self.data.doPause(self)
 end
 
 function timedHandler:gameOver()
 	--show final scoreboard, event over, and do return to main preperation
+
+	self.data.doGameOver(self)
 
 	timer.Simple(10, function()
 		self:destroy()
@@ -28,13 +28,13 @@ function timedHandler:destroy()
 end
 
 function timedHandler:shouldStop()
-	local plys = nx.events:getPlayers(self.id)
-
-	if (plys == 0) then return true end
+	if (#self.players == 0) then return true end
 	if (self.data.shouldEnd(self)) then return true end
 end
 
 function timedHandler:update()
+	self.players = nx.events:getPlayers(self.id)
+
 	if (self:shouldStop()) then
 		self:destroy()
 		return
@@ -46,6 +46,8 @@ function timedHandler:update()
 
 		self.state = STATE_PAUSED
 		self.time_left = 10
+
+		self:pause()
 
 	elseif (self.state == STATE_PAUSED)
 
@@ -72,6 +74,7 @@ function nx.events.timed:start(id, gamemode)
 	timedHandler.state = STATE_PAUSED --force start
 	timedHandler.rounds = eventData.play_style[ 2 ]
 	timedHandler.time_limit = eventData.play_style[ 3 ]
+	timedHandler.cache = {}
 	
 	local obj = {}
 	setmetatable(obj, {
@@ -79,4 +82,6 @@ function nx.events.timed:start(id, gamemode)
 		})
 
 	timer.Create("nx.timer."..id, 1, 0, obj:update())
+
+	return obj
 end

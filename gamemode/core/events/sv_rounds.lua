@@ -2,22 +2,22 @@ nx.events.rounds = nx.events.rounds or {}
 
 local roundHandler = {}
 function roundHandler:shouldPause()
-	local plys = nx.events:getPlayers(self.id)
-
 	if (self.data.shouldPause(self)) then return true end
-	if (plys < 2) then return true end
+	if (#self.players < (self.data.restrictions.minPlayers or 2)) then return true end
 end
 
 function roundHandler:pause()
-	--freeze players or smth, rounds don't actually continue here
+	self.data.doPause(self)
 end
 
 function roundHandler:end()
-	--show scoreboard and shit
+	self.data.doRoundEnd(self)
 end
 
 function roundHandler:gameOver()
 	--show final scoreboard, event over, and do return to main preperation
+
+	self.data.doGameOver(self)
 
 	timer.Simple(10, function()
 		self:destroy()
@@ -31,10 +31,8 @@ function roundHandler:destroy()
 end
 
 function roundHandler:shouldStop()
-	local plys = nx.events:getPlayers(self.id)
-
-	if (plys == 0) then return true end
-	if (self.data.shouldEnd(self.id)) then return true end
+	if (#self.players == 0) then return true end
+	if (self.data.shouldEnd(self)) then return true end
 end
 
 function roundHandler:setup()
@@ -47,10 +45,16 @@ function roundHandler:setup()
 
 	end
 
-	self.data.setup(self.id)
+	self.data.doRoundSetup(self, self.players)
+end
+
+function roundHandler:start()
+	self.data.doRoundStart(self)
 end
 
 function roundHandler:update()
+	self.players = nx.events:getPlayers(self.id)
+
 	if (self:shouldStop()) then
 		self:destroy()
 		return
@@ -62,6 +66,7 @@ function roundHandler:update()
 
 		self.state = STATE_PAUSED
 		self.time_left = 10
+		self:pause()
 
 	elseif (self.state == STATE_PAUSED)
 
@@ -117,6 +122,7 @@ function nx.events.rounds:start(id, gamemode)
 	roundHandler.state = STATE_ENDING --force start
 	roundHandler.rounds = eventData.play_style[ 2 ]
 	roundHandler.time_limit = eventData.play_style[ 3 ]
+	roundHandler.cache = {}
 	
 	local obj = {}
 	setmetatable(obj, {
@@ -124,4 +130,6 @@ function nx.events.rounds:start(id, gamemode)
 		})
 
 	timer.Create("roundHandler."..id, 1, 0, obj:update())
+
+	return obj
 end

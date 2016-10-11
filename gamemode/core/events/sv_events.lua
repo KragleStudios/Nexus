@@ -28,7 +28,17 @@ function nx.events:register(data)
 end
 
 function nx.events:canJoin(ply, ev_id)
+	local eventData = ndoc.table.nxActiveEvents[ ev_id ]
+	local eventObj  = nx.events_sv_cache[ ev_id ]
+	if (not eventData) then return end
 
+	local isPrivate = eventData.private
+	local invites   = eventObj.invitations
+
+	if (not isPrivate or isPrivate and table.HasValue(invites, ply)) then return true end
+	if (eventData.canPlayerJoin(eventObj, ply)) then return true end
+
+	return false
 end
 
 function nx.events:getPlayers(ev_id)
@@ -57,7 +67,7 @@ function nx.events:joinEvent(ply, ev_id)
 	ply:setLayer(eventData.layer)
 
 	local event_Functions = nx.eventsList[ eventData.gamemode ]
-	event_Functions:playerJoinEvent(ply, ev_id)
+	event_Functions:playerJoinEvent(nx.events_sv_cache[ ev_id ], ply)
 end
 
 function nx.events:leaveEvent(ply, ev_id)
@@ -70,7 +80,7 @@ function nx.events:leaveEvent(ply, ev_id)
 	ply:resetLayer()
 
 	local event_Functions = nx.eventsList[ eventData.gamemode ]
-	event_Functions:playerLeftEvent(ply, ev_id)
+	event_Functions:playerLeftEvent(nx.events_sv_cache[ ev_id ], ply)
 
 	local shouldPause = event_Functions:shouldPause(ev_id)
 
@@ -78,23 +88,30 @@ function nx.events:leaveEvent(ply, ev_id)
 end
 
 function nx.events:destroyEvent(id, data)
+	local leaveFunc = data.playerLeftEvent
+	local eventObj = nx.events_sv_cache[ id ]
+
 	for k,v in ndoc.pairs(ndoc.table.nxActiveEvents[ ev_id ].players) do
 		if (not IsValid(k)) then continue end
 
+		leaveFunc(eventObj, k)
 		k:resetLayer()
 	end
 	for k,v in ndoc.pairs(ndoc.table.nxActiveEvents[ id ].spectators) do
 		if (not IsValid(k)) then continue end
 
+		leaveFunc(eventObj, k)
 		k:resetLayer()
 	end
-
 
 	for hk,v in pairs(data.hooks) do
 		hook.Remove(hk, hk..id)
 	end
 
+
+
 	ndoc.table.nxActiveEvents[ id ] = nil
+	nx.events_sv_cache[ id ] = nil
 
 	--do some notification of shit
 end
@@ -115,9 +132,10 @@ function nx.events:new(type, name, creator, private, invitations, locationID)
 	if (ev_data) then return end
 	if (not name or not creator or private == nil or not invitations or not locationID) then return end
 	
+
+	local invitations = not istable(invitations) and {invitations} or invitations
 	local rest = ev_data.restrictions
-	local maxPlayers = rest.MaxPlayers
-	local playTime = rest.MaxPlayTime
+	local maxPlayers = rest.maxPlayers
 	local location = ev_data.locations[ locationID ]
 	local maxRounds = ev_data.MaxRounds
 	local maxScore  = ev_data.MaxScore
@@ -129,8 +147,8 @@ function nx.events:new(type, name, creator, private, invitations, locationID)
 		maxplayers = maxPlayers,
 		playtime = playTime,
 		loc = location,
-		maxrounds = maxRounds,
-		maxscore = maxScore,
+		rounds = maxRounds,
+		score = maxScore,
 		private = private,
 		creator = creator,
 		gamemode = type,
@@ -146,6 +164,8 @@ function nx.events:new(type, name, creator, private, invitations, locationID)
 
 	nx.events:joinEvent(creator)
 
+	local evObj
+
 	hook.Add("Think", "Hook_ShouldStart_"..id, function()
 		if (not ndoc.table.nxActiveEvents[ id ]) then 
 			hook.Remove("Think", "Hook_ShouldStart_"..id)
@@ -156,21 +176,28 @@ function nx.events:new(type, name, creator, private, invitations, locationID)
 			local playStyle = ev_data.play_style[1]
 
 			if (playStyle == STYLE_ROUNDS) then
-				nx.events.rounds:start(id, type) --new round based event
+				evObj = nx.events.rounds:start(id, type) --new round based event
 			else
-				nx.events.timed:start(id, type) --new timed based event
+				evObj = nx.events.timed:start(id, type) --new timed based event
 			end
 		end
 	end)
+
+	evObj.invitations = invitations
+
+	nx.events_sv_cache[ id ] = evObj
 
 	for hk, cback in pairs(ev_data.hooks) do
 		hook.Add(hk, hk .. id, function(...)
 			local players_in_event = nx.events:getPlayers(id)
 
+			local shouldCallBack = true
 			for k,v in pairs({...}) do
-				if (type(v) == "player" and not table.HasValue(players_in_event, v)) then continue end --this will continue everytime a hook has a player entity not in our specific event
+				if (type(v) == "player" and not table.HasValue(players_in_event, v)) then shouldCallBack = false end --this will continue everytime a hook has a player entity not in our specific event
+			end
 
-				cback(...)
+			if (shouldCallBack) then
+				cback(..., evObj)
 			end
 		end)
 	end

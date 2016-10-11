@@ -2,6 +2,7 @@ if SERVER then
 	AddCSLuaFile()
 
 	nx.events = nx.events or {} --unsycned table of event data
+	nx.events_sv_cache = events_sv_cache or {} --list of the event objects returned by the algorithm
 	ndoc.table.nxEvents = ndoc.table.nxEvents or {} --synced table of event data
 	ndoc.table.nxActiveEvents = ndoc.table.nxActiveEvents or {}
 end
