@@ -62,6 +62,11 @@ function EV.getWinner(event)
 	return event.max_kills
 end
 
+--if this is a timed event, only called once, if it's round based, it will get called each ending
+function EV.rewardWinner(player)
+	player:addNexi(1000)
+end
+
 --can our player join the event????
 function EV.canJoinEvent(event, player)
 	return true
@@ -72,6 +77,26 @@ function EV.playerJoinEvent(event, player)
 	player:Give("weapon_ar2")
 end
 
+--lets create a table of stuff to display to the client at the end of the game
+--options: ['headers'] = {H1, H2, H3}
+--		   ['players'] = {Title1, Title2, Title3}
+--		   **For instance, H1 could be "Player" while Title1 could be the playername
+function EV.getScoreboardPop(event)
+	local tab = {}
+
+	tab['headers'] = {'Player', 'Kills', 'Deaths'}
+	tab['players'] = {
+		--{PlayerName, Kills, Deaths},
+	}
+
+	for k,v in pairs(event.players) do
+		local cacheData = event.cache[ v ]
+
+		table.insert(tab['players'], { v:Nick(), cacheData.kills or 0, cacheData.deaths or 0 })
+	end
+
+	return tab
+end
 
 --we left cuz we are a bitch
 --NOTE: This gets called on all active players when an event is destroyed too!

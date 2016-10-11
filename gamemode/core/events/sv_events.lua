@@ -6,6 +6,8 @@ STATE_ENDING  = 3
 STYLE_ROUNDS = 1
 STYLE_TIMED  = 2
 
+util.AddNetworkString("nx.show_scoreboard")
+
 function nx.events:register(data)
 	assert(data.name, 'events must have names!')
 	assert(data.locations, 'events must contain location data!')
@@ -39,6 +41,12 @@ function nx.events:canJoin(ply, ev_id)
 	if (eventData.canPlayerJoin(eventObj, ply)) then return true end
 
 	return false
+end
+
+function nx.events:showScoreboard(event, scoreboard_popData)
+	net.Start("nx.show_scoreboard")
+		net.WriteTable(scoreboard_popData)
+	net.Send(event.players)
 end
 
 function nx.events:getPlayers(ev_id)

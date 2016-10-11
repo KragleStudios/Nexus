@@ -14,6 +14,11 @@ end
 function timedHandler:gameOver()
 	--show final scoreboard, event over, and do return to main preperation
 
+	self.data.rewardWinner(self.data.getWinner(self))
+
+	local data = self.data.getScoreboardPop(self)
+	nx.events:showScoreboard(self, data)
+	
 	self.data.doGameOver(self)
 
 	timer.Simple(10, function()
