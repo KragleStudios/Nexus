@@ -1,8 +1,8 @@
 if SERVER then
 	AddCSLuaFile()
 
-	ndoc.table.nxLayers = {}
-	ndoc.table.nxEntLayers = {}
+	ndoc.table.nxLayers = ndoc.table.nxLayers or {}
+	ndoc.table.nxEntLayers = ndoc.table.nxEntLayers or {}
 end
 
 nx.layers = nx.layers or {}

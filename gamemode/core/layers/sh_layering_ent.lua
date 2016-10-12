@@ -13,9 +13,9 @@ if (SERVER) then
 		ndoc.table.nxEntLayers[ self:EntIndex() ] = int
 
 		if (self:IsPlayer()) then
-			for k,v in pairs(self:getOwnedEntities()) do
+			/*for k,v in pairs(self:getOwnedEntities()) do
 				ndoc.table.nxEntLayers[ v:EntIndex() ] = int
-			end
+			end*/
 			for k,v in pairs(self:GetWeapons()) do
 				ndoc.table.nxEntLayers[ v:EntIndex() ] = int
 			end
@@ -50,7 +50,7 @@ else
 end
 
 function meta:getLayer()
-	return ndoc.table.nxEntLayers[ self:EntIndex() ] or nx.config.default_layer
+	return ndoc.table.nxEntLayers and ndoc.table.nxEntLayers[ self:EntIndex() ] or nx.config.default_layer
 end
 
 function meta:shouldLayer()
