@@ -4,7 +4,6 @@
 
 if SERVER then
 	AddCSLuaFile()
-	return
 end
 
 require "sty"
