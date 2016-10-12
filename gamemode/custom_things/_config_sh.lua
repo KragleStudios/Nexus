@@ -1,3 +1,3 @@
 nx.config = nx.config or {}
 
-nx.config.layer_default = 1
+nx.config.default_layer = 1

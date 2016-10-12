@@ -1,6 +1,6 @@
 function nx.layers.createNew(id)
 	if (not id) then
-		local id = math.random(0, 1000)
+		id = math.random(0, 1000)
 
 		while ndoc.table.nxLayers[id] do
 			id = math.random(0, 1000)

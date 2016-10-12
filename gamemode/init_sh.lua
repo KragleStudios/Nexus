@@ -41,7 +41,7 @@ nx.print = ra.print
 
 -- module loader
 print "--------------------------"
-print " factionwars v0.1.0 Alpha "
+print " Nexus v0.1.0 Alpha "
 print "--------------------------"
 
 nx.module_srcs = {}

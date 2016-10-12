@@ -50,7 +50,7 @@ else
 end
 
 function meta:getLayer()
-	return ndoc.table.nxEntLayers[ self:EntIndex() ] or nx.config.layer_default
+	return ndoc.table.nxEntLayers[ self:EntIndex() ] or nx.config.default_layer
 end
 
 function meta:shouldLayer()
