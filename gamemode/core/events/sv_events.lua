@@ -72,6 +72,8 @@ function nx.events:joinEvent(ply, ev_id)
 		ndoc.table.nxActiveEvents[ ev_id ].players[ ply ] = true
 	end
 
+	ndoc.table.nxPEvents[ ply:EntIndex() ] = ev_id
+
 	ply:setLayer(eventData.layer)
 
 	local event_Functions = nx.eventsList[ eventData.gamemode ]
@@ -84,6 +86,7 @@ function nx.events:leaveEvent(ply, ev_id)
 	
 	ndoc.table.nxActiveEvents[ ev_id ].spectators[ ply ] = nil
 	ndoc.table.nxActiveEvents[ ev_id ].players[ ply ] = nil
+	ndoc.table.nxPEvents[ plY:EntIndex() ] = nil
 
 	ply:resetLayer()
 
