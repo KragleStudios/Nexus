@@ -104,7 +104,7 @@ local function createHUD()
 
 		local col = Color(25, 25, 255, 255)
 		function armorBar:Paint(w, h)
-			local armor = 100-- LocalPlayer():Armor()
+			local armor = LocalPlayer():Armor()
 
 			if (armor == 0) then return end
 
