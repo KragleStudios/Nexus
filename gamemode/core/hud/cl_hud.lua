@@ -49,12 +49,45 @@ local function createHUD()
 		end*/
 	
 		infoDaddy = vgui.Create("NFrame")
-		infoDaddy:SetSize(210, 110)
+		infoDaddy:SetSize(210, 68)
 		infoDaddy:SetPos(10, 10)
 
+		--Images
+		local healthImg = vgui.Create("DImage", infoDaddy)
+		healthImg:SetPos(5, 5)
+		healthImg:SetSize(16, 16)
+		healthImg:SetImageColor(Color(255, 255, 255))
+		healthImg:SetImage("nexus/heart.png")
+
+		local armorImg = vgui.Create("DImage", infoDaddy)
+		armorImg:SetPos(5, 26)
+		armorImg:SetSize(16, 16)
+		armorImg:SetImageColor(Color(255, 255, 255))
+		armorImg:SetImage("nexus/shield.png")
+
+		local ammoImg = vgui.Create("DImage", infoDaddy)
+		ammoImg:SetPos(5, 47)
+		ammoImg:SetSize(16, 16)
+		ammoImg:SetImageColor(Color(255, 255, 255))
+		ammoImg:SetImage("nexus/bullets.png")
+
+		hook.Add("PlayerSwitchWeapon", "PlayerWeaponThing", function(ply, _, wep)
+			if (ply == LocalPlayer()) then				
+				local ammo = wep:Clip1()
+				local maxAmmo = wep:GetMaxClip1()
+
+				if (ammo and maxAmmo and ammo >= 0) then
+					infoDaddy:SetTall(68)
+				else
+					infoDaddy:SetTall(47)
+				end
+			end
+		end)
+
+		--Bars
 		local healthBar = vgui.Create("DPanel", infoDaddy)
-		healthBar:SetSize(infoDaddy:GetWide() - 45, 30)
-		healthBar:SetPos(40, 5)
+		healthBar:SetSize(infoDaddy:GetWide() - 30, 16)
+		healthBar:SetPos(25, 5)
 
 		local col = Color(255, 25, 25, 255)
 		local maxHealth = LocalPlayer():GetMaxHealth()
@@ -66,8 +99,8 @@ local function createHUD()
 		end
 
 		local armorBar = vgui.Create("DPanel", infoDaddy)
-		armorBar:SetSize(infoDaddy:GetWide() - 45, 30)
-		armorBar:SetPos(40, 10 + healthBar:GetTall())
+		armorBar:SetSize(infoDaddy:GetWide() - 30, 16)
+		armorBar:SetPos(25, 10 + healthBar:GetTall())
 
 		local col = Color(25, 25, 255, 255)
 		function armorBar:Paint(w, h)
@@ -81,8 +114,8 @@ local function createHUD()
 		end
 
 		local ammoBar = vgui.Create("DPanel", infoDaddy)
-		ammoBar:SetSize(infoDaddy:GetWide() - 45, 30)
-		ammoBar:SetPos(40, 15 + healthBar:GetTall() + armorBar:GetTall())
+		ammoBar:SetSize(infoDaddy:GetWide() - 30, 16)
+		ammoBar:SetPos(25, 15 + healthBar:GetTall() + armorBar:GetTall())
 
 		local col = Color(255, 215, 25, 255)
 		function ammoBar:Paint(w, h)
