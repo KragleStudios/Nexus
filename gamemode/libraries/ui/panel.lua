@@ -46,6 +46,7 @@ function PANEL:SetHeader(...)
 	self.title = ...
 
 	self:SetTitle("")
+	self.TitleH, self.TitleW = 0, 0
 end
 
 function PANEL:GetTitle()
@@ -72,7 +73,7 @@ function PANEL:Paint( w, h )
 	draw.RoundedBox( 6, 1, 1, w - 2, h - 2, SKIN.FrameBorderColor )
 	draw.RoundedBox( 6, 2, 2, w - 4, h - 4, SKIN.FrameBGColor )
 	
-	surface.SetFont( nx.fonts.default:fitToView(w - 10, h, self:GetTitle()) )
+	surface.SetFont( nx.fonts.default:fitToView(w - 10, (h < 30 and h) or 30, self:GetTitle()) )
 	if (self:GetTitle() and string.len(self:GetTitle()) >= 1) then
 		self.TitleW, self.TitleH = surface.GetTextSize( self:GetTitle() )
 

@@ -8,19 +8,32 @@ SKIN.PrintName 		= "Nexus Derma Skin"
 SKIN.Author 		= "Alexander Sagen (TrinityX)"
 SKIN.DermaVersion	= 1
 
+
 SKIN.FrameBGColor		= Color( 32, 32, 32 )
 SKIN.FrameBorderColor	= Color( 221, 221, 221 )
 SKIN.FrameOutlineColor	= Color( 0, 0, 0 )
 SKIN.FrameTitleBGColor	= Color( 0, 0, 0 )
 
---[[---------------------------------------------------------
-	Frame
------------------------------------------------------------]]
-function SKIN:PaintFrame( panel, w, h )
+SKIN.ButtonBGColor = SKIN.FrameBGColor
+SKIN.ButtonOutlineColor = SKIN.FrameOutlineColor
+SKIN.ButtonBorderColor = SKIN.FrameBorderColor
+SKIN.ButtonHoverColor = Color(41, 171, 226)
+SKIN.ButtonClickColor = Color(0, 113, 188)
 
-	draw.RoundedBox( 8, 0, 0, w, h, SKIN.FrameOutlineColor )
-	draw.RoundedBox( 8, 1, 1, w - 2, h - 2, SKIN.FrameBorderColor )
-	draw.RoundedBox( 8, 2, 2, w - 4, h - 4, SKIN.FrameBGColor )
+local distance_between = 20
+local rect_width = 15
+local DisabledColor = Color(100, 100, 100)
+
+function SKIN:DoDisabled(panel, w, h)
+	local rect_height = h * 3
+	local num_rects = math.ceil(w / (rect_width + distance_between))
+
+	draw.NoTexture()
+	surface.SetDrawColor(DisabledColor)
+
+	for i = 0, num_rects do
+		surface.DrawTexturedRectRotated(i * (rect_width + distance_between), h / 2, rect_width, rect_height, 45)
+	end
 
 end
 
