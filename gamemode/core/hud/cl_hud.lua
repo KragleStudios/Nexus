@@ -49,7 +49,7 @@ local function createHUD()
 		end*/
 	
 		infoDaddy = vgui.Create("NFrame")
-		infoDaddy:SetSize(210, 68)
+		infoDaddy:SetSize(210, 47)
 		infoDaddy:SetPos(10, 10)
 
 		--Images

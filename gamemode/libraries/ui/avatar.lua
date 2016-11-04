@@ -2,7 +2,7 @@ local PANEL = {}
  
 function PANEL:Init()
     self.cont = vgui.Create("NFrame")
-    self.cont:SetTitle("")
+    self.cont:SetHeader("")
 
     self.avatar = vgui.Create("AvatarImage", self.cont)
     self.avatar:SetPos(3, 3)

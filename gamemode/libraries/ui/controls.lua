@@ -79,7 +79,6 @@ function PANEL:Paint( w, h )
 	
 	if self:GetDisabled() then
 		borderColor = SKIN.ButtonBorderColor
-		backgroundColor = Color(80, 80, 80)
 	end	
 
 	draw.RoundedBox( 8, 0, 0, w, h, SKIN.ButtonOutlineColor )
@@ -149,21 +148,3 @@ end
 
 
 derma.DefineControl( "NButton", "A standard Button", PANEL, "DLabel" )
-
-
-concommand.Add("testmenu", function()
-	local this = vgui.Create("NFrame")
-	this:SetSize(500, 200)
-	this:SetHeader("test")
-	this:MakePopup()
-	this:Center()
-
-	local btn = vgui.Create("NButton", this)
-	btn:SetSize(400, 100)
-	btn:Center()
-	btn:SetTitle("Test")
-	function btn:DoClick()
-		this:Close()
-	end
-	btn:AddToolTip('test')
-end)

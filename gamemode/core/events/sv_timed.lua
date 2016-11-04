@@ -54,7 +54,7 @@ function timedHandler:update()
 
 		self:pause()
 
-	elseif (self.state == STATE_PAUSED)
+	elseif (self.state == STATE_PAUSED) then
 
 		self.state = self.old_state
 		self.time_left = self.old_time_left

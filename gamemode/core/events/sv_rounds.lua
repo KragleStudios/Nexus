@@ -10,7 +10,7 @@ function roundHandler:pause()
 	self.data.doPause(self)
 end
 
-function roundHandler:end()
+function roundHandler:finish()
 	self.data.rewardWinner(self.data.getWinner(self))
 
 	local data = self.data.getScoreboardPop(self)
@@ -78,7 +78,7 @@ function roundHandler:update()
 		self.time_left = 10
 		self:pause()
 
-	elseif (self.state == STATE_PAUSED)
+	elseif (self.state == STATE_PAUSED) then
 
 		self.state = self.old_state
 		self.time_left = self.old_time_left
@@ -90,7 +90,7 @@ function roundHandler:update()
 			self.state = STATE_ENDING
 			self.time_left = 10
 
-			self:end()
+			self:finish()
 		elseif (self.time_left == 0 and self.state == STATE_ENDING) then
 			
 			if (self.rounds_left == 0) then

@@ -20,10 +20,26 @@ SKIN.ButtonBorderColor = SKIN.FrameBorderColor
 SKIN.ButtonHoverColor = Color(41, 171, 226)
 SKIN.ButtonClickColor = Color(0, 113, 188)
 
+SKIN.TextBoxBorderColor = Color(0, 0, 0)
+SKIN.TextBoxBGColor = Color(255, 255, 255)
+SKIN.TextBoxHoverColor = Color(245, 245, 245)
+SKIN.TextBoxActiveColor = Color(255, 255, 255)
+SKIN.TextBoxOutlineColor = Color(255, 255, 255)
+
+SKIN.ScrollBarHovered = Color(41, 171, 226)
+SKIN.ScrollBarDepressed = Color(0, 113, 188)
+SKIN.ScrollBar = Color(221, 221, 221)
+
+SKIN.ListViewLineColor = {
+	[1] = Color(255, 255, 255),
+	[2] = Color(240, 240, 240)
+}
+
 local distance_between = 20
-local rect_width = 15
+local rect_width = 12
 local DisabledColor = Color(100, 100, 100)
 
+--TODO: Improve this
 function SKIN:DoDisabled(panel, w, h)
 	local rect_height = h * 3
 	local num_rects = math.ceil(w / (rect_width + distance_between))
@@ -58,12 +74,108 @@ function SKIN:PaintButton( panel, w, h )
 		backgroundColor = Color(80, 80, 80)
 	end	
 
-	draw.RoundedBox( 8, 0, 0, w, h, self.FrameOutlineColor )
-	draw.RoundedBox( 8, 1, 1, w - 2, h - 2, borderColor )
-	draw.RoundedBox( 8, 2, 2, w - 4, h - 4, backgroundColor )
+	draw.RoundedBox( 6, 0, 0, w, h, self.FrameOutlineColor )
+	draw.RoundedBox( 6, 1, 1, w - 2, h - 2, borderColor )
+	draw.RoundedBox( 6, 2, 2, w - 4, h - 4, backgroundColor )
 
 	panel:SetColor( borderColor )
 
+end
+
+function SKIN:PaintTextEntry(pnl, w, h)
+	local borderColor = SKIN.TextBoxBorderColor
+	local backgroundColor = SKIN.TextBoxBGColor
+
+	if pnl.Hovered then
+		backgroundColor = SKIN.TextBoxHoverColor
+	end
+
+	if pnl.Depressed or pnl:IsSelected() then
+		backgroundColor = SKIN.TextBoxActiveColor
+	end
+	
+	if pnl:GetDisabled() then
+		borderColor = SKIN.TextBoxBorderColor
+		backgroundColor = Color(80, 80, 80)
+	end	
+
+	draw.RoundedBox( 6, 0, 0, w, h, SKIN.TextBoxOutlineColor )
+	draw.RoundedBox( 6, 1, 1, w - 2, h - 2, borderColor )
+	draw.RoundedBox( 6, 2, 2, w - 4, h - 4, backgroundColor )
+
+	if (pnl:GetDisabled()) then
+		SKIN:DoDisabled(pnl, w, h)
+	end
+
+	pnl:DrawTextEntryText(Color(0, 0, 0), Color(0, 0, 0), Color(0, 0, 0))
+end
+
+function SKIN:PaintListViewLine(panel, w, h)
+	local id = panel:GetID()
+	local col = SKIN.ListViewLineColor[ 1 ]
+	if (id % 2 ~= 0) then
+   		col = SKIN.ListViewLineColor[ 2 ]
+	end
+
+	selected = Color(0, 0, 0, 0)
+	if (panel:IsSelected()) then
+		selected = Color(0, 0, 0, 255)
+	end
+
+	local height = (h - 2)
+	
+   	draw.RoundedBox(0, 0, 0, w, h, col) 
+   	draw.RoundedBox(6, w - height - 1, 1, height, height, selected)
+end
+
+function SKIN:PaintListView(panel, w, h)
+	draw.RoundedBox(6, 0, 0, w, h, Color(0, 0, 0, 0))
+end
+
+function SKIN:PaintVScrollBar(panel, w, h)
+	draw.RoundedBox(0, 0, 0, w, h, Color(0, 0, 0, 0))
+end
+
+function SKIN:PaintScrollBarGrip(panel, w, h)
+	col = SKIN.ScrollBar
+
+	if (panel.Depressed || panel:IsSelected()) then
+		col = SKIN.ScrollBarDepressed
+	end
+
+	if (panel.Hovered) then
+		col = SKIN.ScrollBarHovered
+	end
+
+	draw.RoundedBox(0, 0, 0, w, h, col)
+end
+
+function SKIN:PaintButtonDown(panel, w, h)
+	col = SKIN.ScrollBar
+
+	if (panel.Depressed || panel:IsSelected()) then
+		col = SKIN.ScrollBarDepressed
+	end
+
+	if (panel.Hovered) then
+		col = SKIN.ScrollBarHovered
+	end
+
+	draw.RoundedBox(0, 0, 0, w, h, col)
+end
+
+function SKIN:PaintButtonUp(panel, w, h)
+	col = SKIN.ScrollBar
+
+	if (panel.Depressed || panel:IsSelected()) then
+		col = SKIN.ScrollBarDepressed
+	end
+
+	if (panel.Hovered) then
+		col = SKIN.ScrollBarHovered
+	end
+
+	draw.RoundedBox(0, 0, 0, w, h, col)
 end
 
 --[[---------------------------------------------------------
