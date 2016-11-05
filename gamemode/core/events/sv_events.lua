@@ -22,8 +22,14 @@ function nx.events:register(data)
 	end
 
 	nx.eventsList[ data.name ] = data -- this stores all function data and stuff
+	
+	local temp = {}
+	for k,v in pairs(data.locations) do
+		table.insert(temp, k)
+	end
+
 	ndoc.table.nxEvents[ data.name ] = { --this stores things relevant to the client only
-		locations = data.locations,
+		locations = temp,
 		restrictions = data.restrictions,
 		play_style = data.play_style
 	}
