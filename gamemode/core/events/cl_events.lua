@@ -81,7 +81,7 @@ concommand.Add("loadmenu", function()
 		event:AddChoice(ev_name)
 
 		for e,i in ndoc.pairs(v.locations) do
-			locations:AddChoice(e)
+			locations:AddChoice(i)
 		end
 	end
 
@@ -106,8 +106,10 @@ concommand.Add("loadmenu", function()
 	create:SetTitle("Create Event")
 	create:SetDisabled(true)
 	function create:Think()
-		if (event_name && event_type && loc) then
+		if (event_name && string.len(event_name) > 1 && event_type && loc) then
 			self:SetDisabled(false)
+		else
+			self:SetDisabled(true)
 		end
 	end
 	function create:DoClick()
