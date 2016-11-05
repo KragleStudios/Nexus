@@ -1,8 +1,18 @@
 local EV = {}
 EV.name = 'Player vs Player'
 EV.locations = {
-	['Grass 1'] = 1,
-	['Grass 2'] = 2
+	['Grass 1'] = {
+		{Vector(-880.835632, 565.363037, -84.074921), Angle(8.9, 26, 0)},
+		{Vector(-320, 829, -83.9), Angle(5, -170, 0)},
+		{Vector(-1007, 1034, -83), Angle(7, 176, 0)},
+		{Vector(-660, 474, -86), Angle(4, -60, 0)}
+	},
+	['Grass 2'] = {
+		{Vector(-880.835632, 565.363037, -84.074921), Angle(8.9, 26, 0)},
+		{Vector(-320, 829, -83.9), Angle(5, -170, 0)},
+		{Vector(-1007, 1034, -83), Angle(7, 176, 0)},
+		{Vector(-660, 474, -86), Angle(4, -60, 0)}
+	}
 }
 
 EV.round_based = false -- is this round based?
@@ -34,7 +44,7 @@ EV.hooks = {
 
 --return whether or not the max kills has been reached
 function EV.shouldEnd(event)
-	return event.max_kills
+	return event.max_kills == EV.kills
 end
 
 --what we do when we decide we need to end
@@ -104,11 +114,11 @@ function EV.playerLeftEvent(event, player)
 	player:StripWeapon("weapon_ar2")
 end
 
-nx.events:register(EV)
 
 
 --THE FOLLOWING COMMANDS ARE FOR ROUND BASED GAMEMODES ONLY!
 --Called everytime a new round is in the setup state
+--Don't do positioning in here, it's handled by the server and is set randomly
 function EV.doRoundSetup(event)
 
 end
@@ -121,4 +131,8 @@ end
 --Called everytime a new round StartSchedule
 function EV.doRoundStart(event)
 
+end
+
+if (SERVER) then
+	nx.events:register(EV)
 end

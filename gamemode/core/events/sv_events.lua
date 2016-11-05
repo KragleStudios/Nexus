@@ -43,6 +43,7 @@ function nx.events:canJoin(ply, ev_id)
 	return false
 end
 
+--TODO: Shared now, this is useless!
 function nx.events:showScoreboard(event, scoreboard_popData)
 	net.Start("nx.show_scoreboard")
 		net.WriteTable(scoreboard_popData)
@@ -77,7 +78,9 @@ function nx.events:joinEvent(ply, ev_id)
 	ply:setLayer(eventData.layer)
 
 	local event_Functions = nx.eventsList[ eventData.gamemode ]
-	event_Functions:playerJoinEvent(nx.events_sv_cache[ ev_id ], ply)
+	
+	local ev = nx.events_sv_cache[ ev_id ]
+	ev:doPlayerJoin(ev, ply)
 end
 
 function nx.events:leaveEvent(ply, ev_id)
@@ -147,9 +150,10 @@ function nx.events:new(type, name, creator, private, invitations, locationID)
 	local invitations = not istable(invitations) and {invitations} or invitations
 	local rest = ev_data.restrictions
 	local maxPlayers = rest.maxPlayers
-	local location = ev_data.locations[ locationID ]
+	local location = locationID
 	local maxRounds = ev_data.MaxRounds
 	local maxScore  = ev_data.MaxScore
+	local spawns = ev_data.locations[ location ]
 
 	local layer = nx.layers.createNew()
 
@@ -171,9 +175,7 @@ function nx.events:new(type, name, creator, private, invitations, locationID)
 
 	for k,v in pairs(invitations) do
 		nx.events:sendInvite(v, id)
-	end
-
-	nx.events:joinEvent(creator)
+	end	
 
 	local evObj
 
@@ -195,8 +197,10 @@ function nx.events:new(type, name, creator, private, invitations, locationID)
 	end)
 
 	evObj.invitations = invitations
+	evObj.spawn_locations = spawns
 
 	nx.events_sv_cache[ id ] = evObj
+	nx.events:joinEvent(creator, id)
 
 	for hk, cback in pairs(ev_data.hooks) do
 		hook.Add(hk, hk .. id, function(...)

@@ -70,6 +70,15 @@ function timedHandler:update()
 	self.time_left = self.time_left - 1
 end
 
+function timedHandler:doPlayerJoin(ply)
+	local event_Functions = nx.eventsList[ self.data.gamemode ]
+	event_Functions:playerJoinEvent(self, ply)
+
+	local spawn_loc = table.Random(self.spawn_locations)
+	ply:SetPos(spawn_loc[ 1 ])
+	ply:SetAngles(spawn_loc[ 2 ])
+end
+
 function nx.events.timed:start(id, gamemode)
 	local eventData = nx.eventsList [ gamemode ]
 

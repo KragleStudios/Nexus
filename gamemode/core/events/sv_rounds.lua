@@ -54,6 +54,10 @@ function roundHandler:setup()
 		ndoc.table.nxActiveEvents[ self.id ].spectators[ k ] = nil
 
 	end
+	
+	local spawn_loc = table.Random(self.spawn_locations)
+	ply:SetPos(spawn_loc[ 1 ])
+	ply:SetAngles(spawn_loc[ 2 ])
 
 	self.data.doRoundSetup(self, self.players)
 end
@@ -122,6 +126,12 @@ function roundHandler:update()
 	ndoc.table.nxActiveEvents[ self.id ].time_left = self.time_left
 	self.time_left = self.time_left - 1
 end
+
+function roundHandler:doPlayerJoin(ply)
+	local event_Functions = nx.eventsList[ self.data.gamemode ]
+	event_Functions:playerJoinEvent(self, ply)
+end
+
 
 function nx.events.rounds:start(id, gamemode)
 	local eventData = nx.eventsList [ gamemode ]
